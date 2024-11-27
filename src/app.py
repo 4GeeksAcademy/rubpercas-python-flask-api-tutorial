@@ -2,8 +2,8 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 todos = [
-  {"label": "My first task,", "done": False},
-  {"label": "My second task", "done": False}
+  {"label": "My first task,", "done": False, "id": 1234},
+  {"label": "My second task", "done": False, "id": 1235}
 ]
 
 @app.route('/todos', methods=['GET'])
@@ -18,13 +18,13 @@ def add_new_todo():
   print ("Incoming request with the following body", request_body)
   return jsonify(todos)
 
-@app.route('/todos/<int:position>', methods=['DELETE'])
-def delete_todo(position):
-  print("This is the position to delete:", position)
-  del todos[position]
+@app.route('/todos/<int:id>', methods=['DELETE'])
+def delete_todo(id):
+  print("This is the id to delete:", id)
+  del todos["id"]
   return jsonify(todos)
 
-@app.route('/todos/<int:id>', methods=['PUT'])
+@app.route('/todos/edit/<int:id>', methods=['PUT'])
 def put_todo(id):
     print("This is the position to change:", id)
     request_body = request.json
@@ -40,9 +40,9 @@ def put_todo(id):
             break
 
     if not found_todo:
-        return jsonify({'error': 'Todo with id "{}" not found'.format(todo_id)}), 404  # Not Found
+        return jsonify({'error': 'Todo not found'.format(todo_id)}), 404 
 
-    return jsonify(todos), 200  # OK status code  
+    return jsonify(todos), 200  
 
 
 if __name__ == '__main__':
